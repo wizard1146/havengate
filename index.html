@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async (e) => {
     {key: 'corpsecap',   unique: false},
     {key: 'snowthistle', unique: false},
   ])
-  hg.db.writeCharacter({
+  await hg.db.writeCharacter({
     uuid : 'HX10L',
     class: 'Drifter',
     name : 'Alex',
@@ -97,6 +97,20 @@ document.addEventListener('DOMContentLoaded', async (e) => {
     xp   : 387,
     gold : 31,
   })
+  
+  console.log(db)
+  
+  let c = await hg.db.getCharacter('HX10L')
+  
+  console.log(c)
+  
+  hg.ux.init()
+  hg.ux.list([
+    {uuid: 'A', name: 'Ingolf Ehrenfest', class: 'Drifter', level: 7},
+    {uuid: 'B', name: 'Lamberto Fiamolin', class: 'Blinkblade', level: 9},
+    {uuid: 'C', name: 'Havisa Laurens', class: 'bannerspear', level: 7},
+  ])
+
   
   /*
   Level
@@ -127,20 +141,6 @@ document.addEventListener('DOMContentLoaded', async (e) => {
  <div id='blinkblade'  class='class-icon'></div>
  <div id='geminate'    class='class-icon'></div>
   */
-  
-  console.log(db)
-  
-  let c = await hg.db.getCharacter('HX10L')
-  
-  console.log(c)
-  
-  hg.ux.init()
-  hg.ux.list([
-    {uuid: 'A', name: 'Ingolf Ehrenfest', class: 'Drifter', level: 7},
-    {uuid: 'B', name: 'Lamberto Fiamolin', class: 'Blinkblade', level: 9},
-    {uuid: 'C', name: 'Havisa Laurens', class: 'bannerspear', level: 7},
-  ])
-
 })
 
 </script>
