@@ -1,5 +1,6 @@
 <link rel="manifest" href="manifest.json" />
 <style>
+
  .resource-icon {
    width : 42px;
    height: 42px;
@@ -35,8 +36,8 @@
  }
 
 .class-icon {
-   width : 84px;
-   height: 84px;
+   width : 88px;
+   height: 88px;
    background-size: cover;
  }
  #bannerspear.class-icon   {
@@ -60,24 +61,8 @@
 </style>
 <script src='hg.db.js'></script>
 <script src='hg.constructs.js'></script>
+<script src='hg.ux.js'></script>
 <body>
- <div id='lumber' class='resource-icon'></div>
- <div id='metal'  class='resource-icon'></div>
- <div id='hide'   class='resource-icon'></div>
- 
- <div id='arrowvine'   class='resource-icon'></div>
- <div id='flamefruit'  class='resource-icon'></div>
- <div id='axenut'      class='resource-icon'></div>
- <div id='rockroot'    class='resource-icon'></div>
- <div id='corpsecap'   class='resource-icon'></div>
- <div id='snowthistle' class='resource-icon'></div>
- 
- <div id='bannerspear' class='class-icon'></div>
- <div id='drifter'     class='class-icon'></div>
- <div id='boneshaper'  class='class-icon'></div>
- <div id='deathwalker' class='class-icon'></div>
- <div id='blinkblade'  class='class-icon'></div>
- <div id='geminate'    class='class-icon'></div>
 </body>
 <script>
 
@@ -123,6 +108,24 @@ document.addEventListener('DOMContentLoaded', async (e) => {
   Mastery 2
   Perks track, checkmarks x 18
   Perks tree
+
+ <div id='lumber' class='resource-icon'></div>
+ <div id='metal'  class='resource-icon'></div>
+ <div id='hide'   class='resource-icon'></div>
+ 
+ <div id='arrowvine'   class='resource-icon'></div>
+ <div id='flamefruit'  class='resource-icon'></div>
+ <div id='axenut'      class='resource-icon'></div>
+ <div id='rockroot'    class='resource-icon'></div>
+ <div id='corpsecap'   class='resource-icon'></div>
+ <div id='snowthistle' class='resource-icon'></div>
+
+ <div id='bannerspear' class='class-icon'></div>
+ <div id='drifter'     class='class-icon'></div>
+ <div id='boneshaper'  class='class-icon'></div>
+ <div id='deathwalker' class='class-icon'></div>
+ <div id='blinkblade'  class='class-icon'></div>
+ <div id='geminate'    class='class-icon'></div>
   */
   
   console.log(db)
@@ -131,6 +134,13 @@ document.addEventListener('DOMContentLoaded', async (e) => {
   
   console.log(c)
   
+  hg.ux.init()
+  hg.ux.list([
+    {uuid: 'A', name: 'Ingolf Ehrenfest', class: 'Drifter', level: 7},
+    {uuid: 'B', name: 'Lamberto Fiamolin', class: 'Blinkblade', level: 9},
+    {uuid: 'C', name: 'Havisa Laurens', class: 'bannerspear', level: 7},
+  ])
+
 })
 
 </script>
