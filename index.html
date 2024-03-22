@@ -1,0 +1,105 @@
+<link rel="manifest" href="/manifest.json">
+<style>
+ .resource-icon {
+   width : 42px;
+   height: 42px;
+   background-size: cover;
+ }
+ #lumber.resource-icon {
+   background-image: url('assets/lumber.png');
+ }
+ #metal.resource-icon  {
+   background-image: url('assets/metal.png');
+ }
+ #hide.resource-icon   {
+   background-image: url('assets/hide.png');
+ }
+ 
+ #arrowvine.resource-icon   {
+   background-image: url('assets/arrowvine.png');
+ }
+ #flamefruit.resource-icon  {
+   background-image: url('assets/flamefruit.png');
+ }
+ #axenut.resource-icon      {
+   background-image: url('assets/axenut.png');
+ }
+ #rockroot.resource-icon    {
+   background-image: url('assets/rockroot.png');
+ }
+ #corpsecap.resource-icon   {
+   background-image: url('assets/corpsecap.png');
+ }
+ #snowthistle.resource-icon {
+   background-image: url('assets/snowthistle.png');
+ }
+</style>
+<script src='hg.db.js'></script>
+<script src='hg.constructs.js'></script>
+<body>
+ <div id='lumber' class='resource-icon'></div>
+ <div id='metal'  class='resource-icon'></div>
+ <div id='hide'   class='resource-icon'></div>
+ 
+ <div id='arrowvine'   class='resource-icon'></div>
+ <div id='flamefruit'  class='resource-icon'></div>
+ <div id='axenut'      class='resource-icon'></div>
+ <div id='rockroot'    class='resource-icon'></div>
+ <div id='corpsecap'   class='resource-icon'></div>
+ <div id='snowthistle' class='resource-icon'></div>
+</body>
+<script>
+
+let db;
+
+document.addEventListener('DOMContentLoaded', async (e) => {
+  
+  /* Load the database */
+  db = await hg.db.init('uuid',
+  [
+    {key: 'uuid',    unique: true },
+    {key: 'class',   unique: false},
+    {key: 'name',    unique: false},
+    {key: 'level',   unique: false},
+    {key: 'xp',      unique: false},
+    {key: 'gold',    unique: false},
+    {key: 'lumber',  unique: false},
+    {key: 'metal',   unique: false},
+    {key: 'hide',    unique: false},
+    {key: 'arrowvine',   unique: false},
+    {key: 'flamefruit',  unique: false},
+    {key: 'axenut',      unique: false},
+    {key: 'rockroot',    unique: false},
+    {key: 'corpsecap',   unique: false},
+    {key: 'snowthistle', unique: false},
+  ])
+  hg.db.writeCharacter({
+    uuid : 'HX10L',
+    class: 'Drifter',
+    name : 'Alex',
+    level: 7,
+    xp   : 387,
+    gold : 31,
+  })
+  
+  /*
+  Level
+  Experience
+  Gold
+  Resources - Tree, Iron, Stuff
+  Notes
+  Mastery 1
+  Mastery 2
+  Perks track, checkmarks x 18
+  Perks tree
+  */
+  
+  console.log(db)
+  
+  let c = await hg.db.getCharacter('HX10L')
+  
+  console.log(c)
+  
+})
+
+</script>
