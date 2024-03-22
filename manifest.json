@@ -13,8 +13,8 @@
       "sizes": "512x512"
     }
   ],
-  "id": "/?source=pwa",
-  "start_url": "/?source=pwa",
+  "id": "/havengate?source=pwa",
+  "start_url": "/havengate?source=pwa",
   "background_color": "#7293DB",
   "display": "fullscreen",
   "scope": "/",
