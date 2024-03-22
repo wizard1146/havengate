@@ -3,9 +3,10 @@ hg = typeof hg != 'undefined' ? hg : {}
 hg.ux = (function() {
   let settings = {
     list_item_height: `3.6vh`,
-    list_name_size  : `31pt`,
+    list_name_font  : `"Stick No Bills"`,
+    list_name_size  : `4vw`,
     list_class_font : `"Julee"`,
-    list_class_size : `18pt`,
+    list_class_size : `3vw`,
   }
   let events = {
     /* -><- */
@@ -117,7 +118,7 @@ hg.ux = (function() {
 
    .list_name {
      font-size   : ${settings.list_name_size};
-     font-family : "Stick No Bills", sans-serif;
+     font-family : ${settings.list_name_font}, sans-serif;
      font-optical-sizing: auto;
      font-weight : 400;
      font-style  : normal;
