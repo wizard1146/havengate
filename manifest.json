@@ -3,12 +3,12 @@
   "name": "Havengate",
   "icons": [
     {
-      "src": "/assets/icon192.png",
+      "src": "/assets/ia.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/assets/icon512.png",
+      "src": "/assets/ib.png",
       "type": "image/png",
       "sizes": "512x512"
     }
