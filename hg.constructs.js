@@ -23,6 +23,7 @@ hg.constructs = (function() {
       this.class   = false
       this.level   = 1
       this.xp      = 0
+      this.notes   = ``
       
       Object.entries(characterResources).forEach(([k,v],index) => {
         this[k]  = v
