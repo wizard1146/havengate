@@ -25,15 +25,12 @@ hg.db = (function() {
         f.forEach((field, index) => {
           os.createIndex( field.key, field.key, {unique: field.unique} )
         })
-        
-        res( e.target.result )
       }
     })
   }
   
   let initialise = async function(kp, f) {
     db = await loadDB(kp, f)
-    
     
     
     return db
@@ -47,14 +44,14 @@ hg.db = (function() {
       let r = s.get( uuid )
     
       r.onerror = (e) => {
-        rej( console.log(`Error retrieving ${uuid}!`))
+        rej( new Error(`Unable to retrieve ${uuid}.`) )
       }
       
       r.onsuccess = (e) => {
         if (r.result) {
           res( r.result )
         } else {
-          rej( console.log(`Object ${uuid} not found!`) )
+          rej( new Error(`Unable to locate ${uuid}.`) )
         }
       }
     })
@@ -67,17 +64,38 @@ hg.db = (function() {
       let r = s.put( data )
       
       r.onerror = (e) => {
-        rej( console.log(`Error writing ${data}!`) )
+        rej( new Error(`Unable to write data: ${data}.`) )
       }
       r.onsuccess = (e) => {
         res( console.log(`Wrote data ${data}!`))
       }
     })
-  } 
+  }
+
+  let getList = async function() {
+    return new Promise(async (res, rej) => {
+      let t = await db.transaction([ vars.dbChars ])
+      let s = t.objectStore( vars.dbChars )
+      let r = s.getAll()
+
+      r.onerror = (e) => {
+        rej( new Error(`Unable to retrieve List.`) )
+      }
+
+      r.onsuccess = (e) => {
+        if (r.result) {
+          res( r.result )
+        } else {
+          rej( new Error(`Unable to process List.`) )
+        }
+      }
+    })
+  }
 
   return {
     init          : initialise,
     getCharacter  : getCharacter,
     writeCharacter: writeCharacter,
+    getList       : getList,
   }
 })()
