@@ -60,6 +60,7 @@
    background-image: url('assets/class_geminate.png');
  }
 </style>
+<script src='hg.data.js'></script>
 <script src='hg.constructs.js'></script>
 <script src='hg.db.js'></script>
 <script src='hg.ux.js'></script>
@@ -71,6 +72,7 @@
 document.addEventListener('DOMContentLoaded', async (e) => {
   
   await hg.nexus.init()
+  await hg.nexus.list()
   
   /* Load the database 
   db = await hg.db.init('uuid',
@@ -91,25 +93,25 @@ document.addEventListener('DOMContentLoaded', async (e) => {
     {key: 'corpsecap',   unique: false},
     {key: 'snowthistle', unique: false},
   ])
-  */
-  await hg.db.writeCharacter({
-    uuid : 'HX10L',
+  
+  let c = await hg.db.getCharacter('HX10L')
+  console.log(c)
+  hg.ux.list([
+    {uuid: 'A', name: 'Ingolf Ehrenfest', class: 'Drifter', level: 7},
+    {uuid: 'B', name: 'Lamberto Fiamolin', class: 'Blinkblade', level: 9},
+    {uuid: 'C', name: 'Havisa Laurens', class: 'bannerspear', level: 7},
+  ])
+  let alex = new hg.constructs.character({
     class: 'Drifter',
     name : 'Alex',
     level: 7,
     xp   : 387,
     gold : 31,
   })
+  await hg.db.writeCharacter(alex)
+  */
   
-  let c = await hg.db.getCharacter('HX10L')
   
-  console.log(c)
-  
-  hg.ux.list([
-    {uuid: 'A', name: 'Ingolf Ehrenfest', class: 'Drifter', level: 7},
-    {uuid: 'B', name: 'Lamberto Fiamolin', class: 'Blinkblade', level: 9},
-    {uuid: 'C', name: 'Havisa Laurens', class: 'bannerspear', level: 7},
-  ])
 
   
   /*
