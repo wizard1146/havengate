@@ -185,6 +185,7 @@ hg.ux = (function() {
    
    #list_add {
      height        : ${settings.list_item_height};
+     line-height   : ${settings.list_item_height};
      font-size     : ${settings.list_name_size};
      font-family   : ${settings.list_class_font}, sans-serif;
      font-optical-sizing: auto;
@@ -196,6 +197,21 @@ hg.ux = (function() {
    }
    #list_add:hover {
      color         : rgba( 231, 231, 231, 0.58 );
+   }
+
+   @media screen and (max-width: 600px) {
+    .list_header {
+       font-size : 9vmin;
+     }
+     .list_name {
+       font-size : 6.1vmin;
+     }
+    .list_level, .list_class {
+       font-size : 4.4vmin;
+     }
+     #list_add {
+       font-size : 6.4vmin;
+     }
    }
    
    .noisy {
