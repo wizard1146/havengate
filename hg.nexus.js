@@ -13,6 +13,7 @@ hg.nexus = (function() {
     /* -><- */
     /* => */
     list_UUIDselected: `list-uuid-selected`,
+    character_back   : `character-back`,
   }
   
   let initialise = async function() {
@@ -40,7 +41,8 @@ hg.nexus = (function() {
   let listen = function() {
     area = document.querySelector('#area')
     
-    area.addEventListener( events.list_UUIDselected, getCharacter)
+    area.addEventListener( events.list_UUIDselected, getCharacter )
+    area.addEventListener( events.character_back, getList )
   }
   
   let getCharacter = async function(e) {
