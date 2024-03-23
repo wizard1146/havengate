@@ -60,18 +60,19 @@
    background-image: url('assets/class_geminate.png');
  }
 </style>
-<script src='hg.db.js'></script>
 <script src='hg.constructs.js'></script>
+<script src='hg.db.js'></script>
 <script src='hg.ux.js'></script>
+<script src='hg.nexus.js'></script>
 <body>
 </body>
 <script>
 
-let db;
-
 document.addEventListener('DOMContentLoaded', async (e) => {
   
-  /* Load the database */
+  await hg.nexus.init()
+  
+  /* Load the database 
   db = await hg.db.init('uuid',
   [
     {key: 'uuid',    unique: true },
@@ -90,6 +91,7 @@ document.addEventListener('DOMContentLoaded', async (e) => {
     {key: 'corpsecap',   unique: false},
     {key: 'snowthistle', unique: false},
   ])
+  */
   await hg.db.writeCharacter({
     uuid : 'HX10L',
     class: 'Drifter',
@@ -99,13 +101,10 @@ document.addEventListener('DOMContentLoaded', async (e) => {
     gold : 31,
   })
   
-  console.log(db)
-  
   let c = await hg.db.getCharacter('HX10L')
   
   console.log(c)
   
-  hg.ux.init()
   hg.ux.list([
     {uuid: 'A', name: 'Ingolf Ehrenfest', class: 'Drifter', level: 7},
     {uuid: 'B', name: 'Lamberto Fiamolin', class: 'Blinkblade', level: 9},
@@ -141,6 +140,23 @@ document.addEventListener('DOMContentLoaded', async (e) => {
  <div id='deathwalker' class='class-icon'></div>
  <div id='blinkblade'  class='class-icon'></div>
  <div id='geminate'    class='class-icon'></div>
+ 
+  character selector
+  - class picker
+  (longitudinal)
+  - character rule reference
+  - personal quest
+  - character sheet
+  --- 
+  --- 
+  --- 
+  - items, longitudinal
+  (episodic)
+  - hp
+  - experience
+  - item, episodic
+  - modifier deck
+  
   */
 })
 
