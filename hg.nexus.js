@@ -14,10 +14,11 @@ hg.nexus = (function() {
   let events = {
     /* -><- */
     /* => */
-    list_UUIDselected: `list-uuid-selected`,
-    character_back   : `character-back`,
-    navigate_back    : `navigate-back`,
-    pass_save_create : `pass-save-create`,
+    list_UUIDselected  : `list-uuid-selected`,
+    character_back     : `character-back`,
+    navigate_back      : `navigate-back`,
+    pass_save_create   : `pass-save-create`,
+    pass_save_character: `pass-save-character`,
   }
   
   let initialise = async function() {
@@ -51,12 +52,11 @@ hg.nexus = (function() {
     area.addEventListener( events.character_back, getList )
     area.addEventListener( events.navigate_back, getList )
     area.addEventListener( events.pass_save_create, createCharacter )
+    area.addEventListener( events.pass_save_character, saveCharacter )
   }
   
   let getCharacter = async function(e) {
-    console.log(e)
     let c = await _db.getCharacter(e.detail)
-    console.log(c)
 
     _ux.char(c)
   }
@@ -74,6 +74,13 @@ hg.nexus = (function() {
     await _db.writeCharacter( nc )
     // Display the character
     _ux.char( nc )
+  }
+  
+  let saveCharacter = async function(e) {
+    // Template the new character
+    let nc = new _co.character(e.detail)
+    // Write new character to DB
+    await _db.writeCharacter( nc )
   }
 
   return {
