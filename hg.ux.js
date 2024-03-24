@@ -1,6 +1,10 @@
 hg = typeof hg != 'undefined' ? hg : {}
 
 hg.ux = (function() {
+  /* External data */
+  let _levels  = hg.data.levels
+  let _classes = hg.data.classes
+
   let settings = {
   
   }
@@ -22,7 +26,10 @@ hg.ux = (function() {
     /* <= */
     list_UUIDselected: `list-uuid-selected`,
     character_back   : `character-back`,
-    pass_save_create : `pass-save-create`,
+    pass_save_create   : `pass-save-create`,
+    pass_save_character: `pass-save-character`,
+    
+    character_save   : `character-save`,
   }
   let classMap = {
     bannerspear: 'Banner Spear',
@@ -81,6 +88,10 @@ hg.ux = (function() {
       document.querySelector('#create_class .create_value').setAttribute('value', e.detail)
       document.querySelector('#modal').remove()
     })
+    area.addEventListener( events.character_save, (e) => {
+      let data = harvestCharacter(character)
+      raiseEvent( events.pass_save_character, data )
+    })
 
     return surface
   }
@@ -96,7 +107,7 @@ hg.ux = (function() {
         s += `<div class="list_header" id="">HAVENGATE</div>`
     
     let t  = ``
-        t += `<div class="list_item" id="_UUID" onclick="raiseEvent(\'${events.list_selectUUID}\', \'_UUID\', document.querySelector(\'#area\'))">`
+        t += `<div class="list_item" id="_UUID" onclick="raiseEvent(\'${events.list_selectUUID}\', \'_UUID\')">`
         t += `   `
         t += `<span class="list_icon">_ICON</span>`
         t += `<span class="list_name">_NAME</span><span class="list_level">_LEVEL</span><span class="list_class">_CLASS</span>`
@@ -114,12 +125,86 @@ hg.ux = (function() {
     }
     // New 
     let p  = ``
-        p += `<div class="list_item" id="list_add" onclick="raiseEvent(\'${events.swap_to_Create}\',null,document.querySelector('#area'))">`
+        p += `<div class="list_item" id="list_add" onclick="raiseEvent(\'${events.swap_to_Create}\')">`
         p += `+`
         p += `</div>`
     s += p
     
     render(s)
+  }
+  
+  /* XP Tables */
+  let templateXPTable = function(parent) {
+    let t = Object.entries(_levels), a = '', b = '', s = '';
+    t.forEach(([k,v],i) => {
+      a += `<div class="XPTable_Level_Cell">${k}</div>`
+      b += `<div class="XPTable_Experience_Cell">${v}</div>`
+    })
+    s += `<div id="${parent}_XPTable">`
+    s +=   `<div id="${parent}_XPTable_Level">${a}</div>`
+    s +=   `<div id="${parent}_XPTable_Experience">${b}</div>`
+    s +=   `<div id="${parent}_XPTable_Pointer" class="XPTable_ArrowUp"></div>`
+    s += `</div>`
+    return s
+  }
+  let activateXPTable = function(parent, inputElement, outputElement, xp) {
+    let t = Object.entries(hg.data.levels)
+    // Measure heights and widths
+    let y = document.querySelector(`#${parent}_XPTable`)
+    let u = document.querySelector(`#${parent}_XPTable_Level`)
+    let z = document.querySelector(`#${parent}_XPTable_Experience`)
+    let p = document.querySelector(`#${parent}_XPTable_Pointer`)
+    let c = document.querySelector('.XPTable_Level_Cell')
+
+    let leftEdge      = u.getBoundingClientRect().x
+    let bottomEdge    = y.getBoundingClientRect().height
+    let pointerWidth  = p.getBoundingClientRect().width
+    let pointerHeight = p.getBoundingClientRect().height
+    let cellWidth     = c.getBoundingClientRect().width
+
+    let leftOrigin    = leftEdge - pointerWidth/2
+    let topOrigin     = bottomEdge - pointerHeight * 1.7
+    
+    p.style.left = leftOrigin
+    p.style.top  = topOrigin
+    
+    let a = 0, b = 0, d = 0;
+    for (var i = t.length - 1; i > -1; i--) {
+      let o = t[i][0]
+      let r = t[i][1]
+      if (xp >= r) {
+        a = o
+        b = r
+        break
+      }
+      d = r
+    }
+    p.style.left = leftOrigin + ((a - 1) * (cellWidth)) + ((xp - b)/(d - b) * cellWidth)
+
+    // Listen to XP change
+    inputElement.addEventListener('keyup', (e) => {
+      let v = e.target.value
+      // Cap the value
+      v = Math.min( maximumXP, v )
+      // Update the expected Level
+      let level = 0
+      let res   = 0
+      let prior = 0
+      for (var i = t.length - 1; i > -1; i--) {
+        let m = t[i]
+        let lvl = m[0]
+        let cut = m[1]
+        if (v >= cut) {
+          level = lvl
+          res = cut
+          break;
+        }
+        prior = cut
+      }
+      outputElement.innerText = level
+      // Update the pointer
+      p.style.left = leftOrigin + ((level - 1) * (cellWidth)) + (((v - res))/(prior - res) * cellWidth)
+    })
   }
   
   // create
@@ -129,7 +214,7 @@ hg.ux = (function() {
     let s  = ``
         s += `<div class="app_back_button" onclick="raiseEvent(\'${events.navigate_back}\',null,document.querySelector(\'#area\'))"><img src="${back_base64}"></img></div>`
         s += `<div class="app_header" id="">HAVENGATE</div>`
-        s += `<div id="create_save" class="app_save_button" onclick="raiseEvent(\'${events.save_create}\',null,document.querySelector(\'#area\'))"><img src="${save_base64}"></img></div>`
+        s += `<div id="create_save" class="app_save_button" onclick="raiseEvent(\'${events.save_create}\',null, )"><img src="${save_base64}"></img></div>`
         s += `<div class="create_element" id="create_name"><div id="create_name_label" class="create_label">Name: </div><input class="create_value"></input></div>`
         s += `<div class="create_element" id="create_class"><div id="create_class_label" class="create_label">Class: </div>`
         s += `<div class="create_value" onclick="raiseEvent(\'${events.create_classPicker_open}\',null,document.querySelector('#area'))">pick a class`
@@ -154,66 +239,26 @@ hg.ux = (function() {
     x += `<div id="create_xp_pointer" class="arrow-up"></div>`
     x += `</div>`
     
+    x = templateXPTable('create')
+    
     s += x
     
     render(s)
 
-    // Measure heights and widths
-    let y = document.querySelector('#create_xp_table')
-    let u = document.querySelector('#create_xp_tableHeader')
-    let z = document.querySelector('#create_xp_tableFooter')
-    let c = document.querySelector('.create_xp_tableHeaderContent')
-    let p = document.querySelector('#create_xp_pointer')
-
-    let leftEdge      = u.getBoundingClientRect().x
-    let bottomEdge    = y.getBoundingClientRect().height + u.getBoundingClientRect().height + z.getBoundingClientRect().height
-    let pointerWidth  = p.getBoundingClientRect().width
-    let pointerHeight = p.getBoundingClientRect().height
-    let cellWidth     = c.getBoundingClientRect().width
-
-    let leftOrigin    = leftEdge - pointerWidth/2
-    let topOrigin     = bottomEdge - pointerHeight 
-    
-    p.style.left = leftOrigin
-    p.style.top  = topOrigin
-
-    // Listen to XP change
-    document.querySelector('#create_xp input').addEventListener('keyup', (e) => {
-      let v = e.target.value
-      // Cap the value
-      v = Math.min( maximumXP, v )
-      // Update the expected Level
-      let level = 0
-      let res   = 0
-      let prior = 0
-      for (var i = t.length - 1; i > -1; i--) {
-        let m = t[i]
-        let lvl = m[0]
-        let cut = m[1]
-        if (v >= cut) {
-          level = lvl
-          res = cut
-          break;
-        }
-        prior = cut
-      }
-      document.querySelector('#create_level .create_value').innerText = level
-      // Update the pointer
-      p.style.left = leftOrigin + ((level - 1) * (cellWidth)) + (((v - res))/(prior - res) * cellWidth)
-    })
+    activateXPTable('create', document.querySelector('#create_xp input'), document.querySelector('#create_level .create_value'))
   }
   
   let createClassPickerOpen = function() {
     let c = Object.entries( hg.data.classes )
     let s = ``
     s += `<div id="modal">`
-    s += `<div id="modal_close" onclick="raiseEvent(\'${events.modal_close}\',null,document.querySelector(\'#area\'))">x</div>`
+    s += `<div id="modal_close" onclick="raiseEvent(\'${events.modal_close}\')">x</div>`
     s += `<div id="create_classPicker">`
     c.forEach(([k,v],i) => {
       if (v.stealth) {
         
       } else {
-        s += `<div class="create_classPicker_element" onclick="raiseEvent(\'${events.create_classPicker_choose}\',\'${v.key}\',document.querySelector(\'#area\'))">${v.print}</div>`
+        s += `<div class="create_classPicker_element" onclick="raiseEvent(\'${events.create_classPicker_choose}\',\'${v.key}\')">${v.print}</div>`
       }
       console.log(k,v,i)
     })
@@ -231,39 +276,52 @@ hg.ux = (function() {
     let c  = classMap[data.class.toLowerCase()] ? classMap[data.class.toLowerCase()] : properCase(data.class)
 
     let s  = ``
-        s += `<div class="character_back" onclick="raiseEvent(\'${events.character_back}\',null,document.querySelector(\'#area\'))"><img src="${back_base64}"></img></div>`
+        s += `<div class="character_back" onclick="raiseEvent(\'${events.character_back}\',null, )"><img src="${back_base64}"></img></div>`
         s += `<div class="list_header" id="">HAVENGATE</div>`
-        s += `<div class="character_save" onclick="raiseEvent(\'\')"><img src="${save_base64}"></img></div>`
+        s += `<div class="character_save" onclick="raiseEvent(\'${events.character_save}\')"><img src="${save_base64}"></img></div>`
         s += `<div class="character_class">${c}</div>`
         s += `<div class="character_name"><div class="character_label">Name:</div><input class="character_value" value="${data.name}"></input></div>`
         s += `<div class="character_level"><div class="character_label">Level:</div><div class="character_value">${data.level}</div></div>`
         s += `<div class="character_xp"><div class="character_label">XP:</div><input class="character_value" value="${data.xp}"></input></div>`
         s += `<div class="character_gold"><div class="character_label">Gold:</div><input class="character_value" value="${data.gold}"></input></div>`
        
+    let m = templateXPTable('character')
+    s += m
+    
         s += `<div id="character_tray">`
         s += `<div id="character_subtray">`
         s += `</div>`
         s += `<div id="character_selector">`
-        s +=   `<div id="character_selector_inventory" class="character_selector" onclick="raiseEvent(\'${events.character_selector_switch}\',\'inventory\',document.querySelector(\'#area\'))"><img src="${inv_base64}"></img></div>`
-        s +=   `<div id="character_selector_perks"     class="character_selector" onclick="raiseEvent(\'${events.character_selector_switch}\',\'perks\',document.querySelector(\'#area\'))"><img src="${perks_base64}"></img></div>`
-        s +=   `<div id="character_selector_reference" class="character_selector" onclick="raiseEvent(\'${events.character_selector_switch}\',\'reference\',document.querySelector(\'#area\'))"><img src="${ref_base64}"></img></div>`
-        s +=   `<div id="character_selector_modDeck"   class="character_selector" onclick="raiseEvent(\'${events.character_selector_switch}\',\'modDeck\',document.querySelector(\'#area\'))"><img src="${deck_base64}"></img></div>`
+        s +=   `<div id="character_selector_inventory" class="character_selector" onclick="raiseEvent(\'${events.character_selector_switch}\',\'inventory\')"><img src="${inv_base64}"></img></div>`
+        s +=   `<div id="character_selector_perks"     class="character_selector" onclick="raiseEvent(\'${events.character_selector_switch}\',\'perks\')"><img src="${perks_base64}"></img></div>`
+        s +=   `<div id="character_selector_reference" class="character_selector" onclick="raiseEvent(\'${events.character_selector_switch}\',\'reference\')"><img src="${ref_base64}"></img></div>`
+        s +=   `<div id="character_selector_modDeck"   class="character_selector" onclick="raiseEvent(\'${events.character_selector_switch}\',\'modDeck\')"><img src="${deck_base64}"></img></div>`
         s += `</div>`
  
         s += `</div>`
+        
 
     render(s)
     
     swapSelector('inventory')
+    
+    // Listen to XP Table
+    activateXPTable('character', document.querySelector('.character_xp input'), document.querySelector('.character_level .character_value'), parseInt(data.xp))
   }
   
   let swapSelector = function(which) {
     let s = ``
+    let n = document.querySelector('.character_notes textarea')
+    let c = hg.data.classes[character.class]
+    
     // Update Active tab
     document.querySelector('.character_selector.active')?.classList.remove('active')
     document.querySelector('#character_selector_' + which).classList.add('active')
+    // Save any changed data & 
+    if (n) { character.notes = n.value }
     // Wipe subtray
     document.querySelector('#character_subtray').innerHTML = ''
+    
     switch(which) {
       case 'inventory':
         // Resources
@@ -278,32 +336,67 @@ hg.ux = (function() {
         })
         s += `</div>`
         // Notes
-        s += `<div class="character_notes"><div class="character_notes_label">Notes:</div><textarea></textarea></div>`
+        s += `<div class="character_notes"><div class="character_notes_label">Notes:</div><textarea value="">${character.notes}</textarea></div>`
+        break;
+      case 'perks':
+        if (c) {
+          let r = {}
+          s += `<div id="character_perks">`
+          c.perks.forEach(e => {
+            r[e.id] = r[e.id] || {count: 0, perks: e.perks, text: e.text}
+            r[e.id]['count']++
+          })
+          Object.entries(r).forEach(([k,v],i) => {
+            for (var j = 0; j < v.count; j++) {
+              s += `<label><input type="checkbox"><span class="checkmark"></span></label>`
+            }
+            s += `<div class="">${v.text}</div><br/>`
+          })
+          console.log(c.perks)
+          console.log(r)
+          s += `</div>`
+        }
+        break;
+      case 'reference':
+        let m = _classes[character.class]
+        s += `<div id="character_reference">`
+        s += `<div class="flavour">${m.flavour}</div>`
+        s += `<div class="information">${m.class_notes}</div>`
+        s += `</div>`
         break;
     }
     document.querySelector('#character_subtray').insertAdjacentHTML('beforeend', s)
   } 
   
+  // collect Create data
   let harvestCreate = function() {
-    let output = {}
-    output.name = document.querySelector('#create_name input').value
-    output.class = document.querySelector('#create_class .create_value').getAttribute('value')
-    output.xp    = document.querySelector('#create_xp input').value
-  console.log(output)
-    return output
+    return {
+      name : document.querySelector('#create_name input').value,
+      class: document.querySelector('#create_class .create_value').getAttribute('value'),
+      xp   : document.querySelector('#create_xp input').value,
+    }
+  }
+  
+  let harvestCharacter = function(character) {
+    character.name = document.querySelector('.character_name input').value
+    character.xp   = document.querySelector('.character_xp input').value
+    character.gold = parseInt(document.querySelector('.character_gold input').value)
+    
+    // If Notes
+    let notes = document.querySelector('.character_notes textarea')
+    if (notes) {
+      character.notes = notes.value
+    }
+    
+    return character
   }
   
   // wipe function
-  let wipe = function() {
-    area.innerHTML = ''
-  }
-
+  let wipe = function() { area.innerHTML = '' }
+  
   // helper functions
-  let raiseEvent = function(event, datum, target) { let t = target ? target : document.querySelector('body'); return t.dispatchEvent(new CustomEvent(event, {detail: datum})) }
-
-  let properCase = function(str) {
-    return str.replace( /\w\S*/g, (t) => { return t.charAt(0).toUpperCase() + t.substr(1).toLowerCase() } )
-  }
+  let raiseEvent = function(event, datum, target) { let t = target ? target : area; return t.dispatchEvent(new CustomEvent(event, {detail: datum})) }
+  let properCase = function(str) { return str.replace( /\w\S*/g, (t) => { return t.charAt(0).toUpperCase() + t.substr(1).toLowerCase() } ) }
 
   return {
     init: initialise,
