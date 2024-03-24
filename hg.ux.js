@@ -7,6 +7,11 @@ hg.ux = (function() {
     header_height_m : `3.7rem`,
     resource_icon_size: `42px`,
     selector_icon_size: `42px`,
+    
+    // UX Settings for Modal
+    modal_close_font        : `"Stick No Bills"`,
+    modal_close_fsize       : `6vmin`,
+    modal_close_fsize_m     : `8vmin`,
 
     // UX Settings for List Page
     list_header_font: `"IM Fell Great Primer SC"`,
@@ -16,6 +21,21 @@ hg.ux = (function() {
     list_name_size  : `4vmin`,
     list_class_font : `"Julee"`,
     list_class_size : `3vmin`,
+    
+    // UX Settings for Create Page
+    create_label_font   : `"Stick No Bills"`,
+    create_label_fsize  : `6vmin`,
+    create_label_fsize_m: `6vmin`,
+    create_label_width: `11ch`,
+    create_value_font   : `"Macondo"`,
+    create_value_fsize  : `6vmin`,
+    create_value_fsize_m: `6vmin`,
+    create_value_input  : `13ch`,
+    create_value_input_s: `6ch`,
+    // UX Settings for Create Modal
+    create_classPicker_element_font   : `"Stick No Bills"`,
+    create_classPicker_element_fsize  : `6vmin`,
+    create_classPicker_element_fsize_m: `8vmin`,
 
     // UX Settings for Character Page
     character_header_font  : `"IM Fell Great Primer SC"`,
@@ -40,14 +60,27 @@ hg.ux = (function() {
     character_resource_font : `"Stick No Bills"`,
     character_resource_fsize: `5.1vmin`,
     character_resource_input: `5vmin`,
+    
   }
   let events = {
     /* -><- */
+    // Navigation
+    navigate_back    : `navigate-back`,
+    save_create      : `save-create`,
+    save_character   : `save-character`,
+    
     list_selectUUID  : `list-select-uuid`,
     character_selector_switch: `character-selector-switch`,
+    swap_to_Create   : `swap-to-create`,
+    
+    create_classPicker_open  : `create-classPicker-open`,
+    create_classPicker_choose: `create-classPicker-choose`,
+    
+    modal_close      : `modal-close`,
     /* <= */
     list_UUIDselected: `list-uuid-selected`,
     character_back   : `character-back`,
+    pass_save_create : `pass-save-create`,
   }
   let classMap = {
     bannerspear: 'Banner Spear',
@@ -90,8 +123,31 @@ hg.ux = (function() {
       // Handle the internal UX bits
       swapSelector(e.detail)
     })
+    area.addEventListener( events.swap_to_Create, (e) => {
+      create()
+    })
+    area.addEventListener( events.save_create, (e) => {
+      let data = harvestCreate()
+      raiseEvent( events.pass_save_create, data, area )
+    })
+    area.addEventListener( events.create_classPicker_open, (e) => {
+      createClassPickerOpen()
+    })
+    area.addEventListener( events.modal_close, (e) => {
+      document.querySelector('#modal').remove()
+    })
+    area.addEventListener( events.create_classPicker_choose, (e) => {
+      console.log(e.detail)
+      document.querySelector('#create_class .create_value').innerText = e.detail
+      document.querySelector('#modal').remove()
+    })
 
     return surface
+  }
+  
+  let render = function(str) {
+    wipe()
+    area.insertAdjacentHTML('beforeend', str)
   }
 
   // display list of characters
@@ -118,14 +174,65 @@ hg.ux = (function() {
     }
     // New 
     let p  = ``
-        p += `<div class="list_item" id="list_add">`
+        p += `<div class="list_item" id="list_add" onclick="raiseEvent(\'${events.swap_to_Create}\',null,document.querySelector('#area'))">`
         p += `+`
         p += `</div>`
     s += p
-    // Wipe
-    wipe()
-    // Add
-    area.insertAdjacentHTML('beforeend', s) 
+    
+    render(s)
+  }
+  
+  // create
+  let create = function() {
+    let t = Object.entries(hg.data.levels)
+    let c = Object.keys(hg.data.classes)
+    
+    let s  = ``
+        s += `<div class="app_back_button" onclick="raiseEvent(\'${events.navigate_back}\',null,document.querySelector(\'#area\'))"><img src="${back_base64}"></img></div>`
+        s += `<div class="app_header" id="">HAVENGATE</div>`
+        s += `<div id="create_save" class="app_save_button" onclick="raiseEvent(\'${events.save_create}\',null,document.querySelector(\'#area\'))"><img src="${save_base64}"></img></div>`
+        s += `<div class="create_element" id="create_name"><div id="create_name_label" class="create_label">Name: </div><input class="create_value"></input></div>`
+        s += `<div class="create_element" id="create_class"><div id="create_class_label" class="create_label">Class: </div>`
+        s += `<div class="create_value" onclick="raiseEvent(\'${events.create_classPicker_open}\',null,document.querySelector('#area'))">`
+        c.forEach(_c => {
+          // s += _c
+          s += `class`
+        })
+        s += `</div>`
+        s += `</div>`
+        s += `<div class="create_element" id="create_xp"><div id="create_xp_label" class="create_label">XP: </div><input type="number" max="100" min="0" class="create_value"></input></div>`
+        
+    let a = '', b = '';
+    t.forEach(([k,v],i) => {
+      a += `${k}`
+      b += `${v}`
+    })
+    s += a + '<br>'
+    s += b
+    
+    s += ``
+    
+    render(s)
+  }
+  
+  let createClassPickerOpen = function() {
+    let c = Object.entries( hg.data.classes )
+    let s = ``
+    s += `<div id="modal">`
+    s += `<div id="modal_close" onclick="raiseEvent(\'${events.modal_close}\',null,document.querySelector(\'#area\'))">x</div>`
+    s += `<div id="create_classPicker">`
+    c.forEach(([k,v],i) => {
+      if (v.stealth) {
+        
+      } else {
+        s += `<div class="create_classPicker_element" onclick="raiseEvent(\'${events.create_classPicker_choose}\',\'${v.key}\',document.querySelector(\'#area\'))">${v.print}</div>`
+      }
+      console.log(k,v,i)
+    })
+    s += `</div>`
+    s += `</div>`
+    
+    area.insertAdjacentHTML('beforeend', s)
   }
   
   // character
@@ -157,10 +264,7 @@ hg.ux = (function() {
  
         s += `</div>`
 
-    // Wipe
-    wipe()
-    // Add
-    area.insertAdjacentHTML('beforeend', s) 
+    render(s)
     
     swapSelector('inventory')
   }
@@ -192,6 +296,15 @@ hg.ux = (function() {
     document.querySelector('#character_subtray').insertAdjacentHTML('beforeend', s)
   } 
   
+  let harvestCreate = function() {
+    let output = {}
+    output.name = document.querySelector('#create_name input').value
+    output.class = document.querySelector('#create_class .create_value').innerText
+    output.xp    = document.querySelector('#create_xp input').value
+  
+    return output
+  }
+  
   // wipe function
   let wipe = function() {
     area.innerHTML = ''
@@ -216,6 +329,118 @@ hg.ux = (function() {
   @import url('https://fonts.googleapis.com/css2?family=IM+Fell+Great+Primer+SC&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Macondo&display=swap');
 
+  #create_name {
+    padding-top   : 3ch;
+  }
+  .create_element {
+    padding-top   : 0.44ch;
+    padding-bottom: 0.44ch;
+  }
+  .create_element div,
+  .create_element input {
+    display: inline-block;
+  }
+  .create_label {
+    padding-right : 0.8ch;
+    font-family   : ${settings.create_label_font};
+    font-size     : ${settings.create_label_fsize};
+    width         : ${settings.create_label_width};
+    text-align    : right;
+  }
+  .create_value {
+    font-family   : ${settings.create_value_font};
+    font-size     : ${settings.create_value_fsize};
+  }
+  input.create_value {
+    background    : rgba( 255, 255, 255, 0.03 );
+    outline       : none;
+    border        : none;
+  }
+  #create_name input {
+    width         : ${settings.create_value_input};
+  }
+  #create_xp input {
+    width         : ${settings.create_value_input_s};
+  }
+  
+  #modal {
+    position: absolute;
+    z-index : 15;
+    top     : 0%;
+    left    : 0%;
+    width   : 100%;
+    height  : 100%;
+    background: rgba( 255, 255, 255, 0.08 );
+    backdrop-filter: blur(7.3px);
+  }
+  #modal_close {
+    position: absolute;
+    top     : 0%;
+    right   : 0%;
+    height  : 3ch;
+    width   : 3ch;
+    font-family: ${settings.modal_close_font};
+    font-size  : ${settings.modal_close_fsize};
+    color      : rgba( 209,  69, 113, 1.00 );
+    color      : rgba( 150,  53,  83, 1.00 );
+    text-align : center;
+  }
+  #create_classPicker {
+    position   : absolute;
+    top        : 50%;
+    left       : 50%;
+    width      : 80%;
+    height     : auto;
+    transform  : translate( -50%, -50% );
+  }
+  .create_classPicker_element {
+    width      : 100%;
+    height     : 3ch;
+    text-align : center;
+    font-family: ${settings.create_classPicker_element_font};
+    font-size  : ${settings.create_classPicker_element_fsize};
+  }
+  
+    
+   .character_name,
+   .character_level,
+   .character_xp,
+   .character_gold {
+     padding-left: 4vmin;
+   }
+   .character_class {
+     height     : ${settings.character_class_height};
+     line-height: ${settings.character_class_lineHeight};
+     text-align : center;
+     font-family: ${settings.character_class_font};
+     font-size  : ${settings.character_class_fsize};
+   }
+
+   .character_label {
+     width        : ${settings.character_label_width};
+     padding-right: ${settings.character_label_padding};
+     font-family  : ${settings.character_label_font};
+     font-size    : ${settings.character_label_fsize};
+     text-align   : right;
+     color        : rgba( 35, 35, 35, 1.00 );
+   }
+   .character_value {
+     font-family  : ${settings.character_value_font};
+     font-size    : ${settings.character_value_fsize};
+   }
+
+   input.character_value  {
+     background   : rgba( 255, 255, 255, 0.02 );
+     border       : none;
+     outline      : none;
+     width        : 13ch;
+   }
+   .character_xp input.character_value,
+   .character_gold input.character_value {
+     width        : 6ch;
+   }
+   
+
    #surface {
      position: absolute;
      top     : 0%;
@@ -231,6 +456,7 @@ hg.ux = (function() {
      background-color: #7293DB;
    }
    
+   .app_header,
    .list_header {
      height     : ${settings.header_height};
      line-height: ${settings.header_height};
@@ -521,26 +747,96 @@ hg.ux = (function() {
    .resource-icon.corpsecap   { background-image: url('assets/resource_corpsecap.png'); }
    .resource-icon.snowthistle { background-image: url('assets/resource_snowthistle.png'); }
 
+   /* Generic App elements */
+   .app_back_button {
+     position   : absolute;
+     top        : 0%;
+     width      : ${settings.header_height};
+     height     : ${settings.header_height};
+   }
+   .app_back_button {
+     left       : 0%;
+   }
+   .app_back_button:hover {
+     background: rgba( 255, 255, 255, 0.08 );
+   }
+   .app_back_button:active {
+     background: rgba( 255, 255, 255, 0.11 );
+   }
+   .app_back_button img {
+     position   : absolute;
+     left       : 50%;
+     top        : 50%;
+     transform  : translate( -50%, -50% );
+     width              : calc(70%);
+     height             : calc(70%);
+     border             : none;
+     outline            : none;
+     background-size    : contain;
+     background-repeat  : no-repeat;
+     background-position: center;
+     filter             : saturate(0%) brightness(30%) contrast(140%) opacity(50%);
+   }
+   
+   /* Create Page */
+   .app_save_button {
+     position   : absolute;
+     top        : 0%;
+     width      : ${settings.header_height};
+     height     : ${settings.header_height};
+   }
+   .app_save_button {
+     right    : 0%;
+   }
+   .app_save_button:hover {
+     background: rgba( 255, 255, 255, 0.08 );
+   }
+   .app_save_button:active {
+     background: rgba( 255, 255, 255, 0.11 );
+   }
+   .app_save_button img {
+     position   : absolute;
+     left       : 50%;
+     top        : 50%;
+     transform  : translate( -50%, -50% );
+     width         : calc(70%);
+     height        : calc(70%);
+     border             : none;
+     outline            : none;
+     background-size    : contain;
+     background-repeat  : no-repeat;
+     background-position: center;
+     filter             : saturate(0%) brightness(30%) contrast(140%) opacity(50%);
+   }
+   
+
    @media screen and (max-width: 600px) {
+    .app_header,
     .list_header,
     .character_back,
-    .character_save {
+    .character_save,
+    .app_save_button {
       height       : ${settings.header_height_m};
     }
+    .app_header,
     .list_header {
       margin-left  : ${settings.header_height_m};
       margin-right : ${settings.header_height_m};
     }
+    .app_back_button,
     .character_back {
       line-height  : ${settings.header_height_m};
       width        : ${settings.header_height_m};
       height       : ${settings.header_height_m};
     }
-    .character_save {
+    .create_save,
+    .character_save,
+    .app_save_button {
       width        : ${settings.header_height_m};
       height       : ${settings.header_height_m};
     }
 
+    .app_header,
     .list_header {
        font-size : 9vmin;
      }
@@ -553,9 +849,21 @@ hg.ux = (function() {
      #list_add {
        font-size : 6.4vmin;
      }
+     .app_back_button,
      .character_back {
        font-size : 9vmin;
      }
+     .create_label {
+       font-size : ${settings.create_label_fsize_m};
+     }
+     
+     #modal_close {
+       font-size : ${settings.modal_close_fsize_m};
+     }
+     
+    .create_classPicker_element {
+      font-size  : ${settings.create_classPicker_element_fsize_m};
+    }
    }
   `
 
@@ -563,5 +871,6 @@ hg.ux = (function() {
     init: initialise,
     list: list,
     char: renderCharacter,
+    create: create,
   }
 })()
