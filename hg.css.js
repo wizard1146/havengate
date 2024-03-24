@@ -8,6 +8,7 @@ hg.css = (function() {
     resource_icon_size: `42px`,
     selector_icon_size: `42px`,
     
+    
     // UX Settings for Modal
     modal_close_font        : `"Stick No Bills"`,
     modal_close_fsize       : `6vmin`,
@@ -64,6 +65,22 @@ hg.css = (function() {
     character_resource_fsize: `5.1vmin`,
     character_resource_input: `5vmin`,
     
+    character_notes_label_font   : `"Stick No Bills"`,
+    character_notes_label_fsize  : `4.3vmin`,
+    character_notes_label_fsize_m: `5.6vmin`,
+    character_notes_value_width  : `calc(100% - 0% - 0%)`,
+    character_notes_value_height : `16ch`,
+    character_notes_value_font   : `"Julee"`,
+    character_notes_value_fsize  : `4.1vmin`,
+    character_notes_value_fsize_m: `3.3vmin`,
+    
+    /* XP Tables */
+    XPTable_Arrow_height     : `6px`,
+    XPTable_Cell_width       : `3.6ch`,
+    XPTable_Cell_height      : `3.2ch`,
+    XPTable_Cell_lineHeight  : `3.8ch`,
+    XPTable_Cell_paddingLeft : `0.5ch`,
+    XPTable_Cell_paddingRight: `0.8ch`,
   }
   let CSSIdentifier = `hg.css.rules`
   let noise_base64 = hg.base64.noise
@@ -78,6 +95,9 @@ hg.css = (function() {
     // Manage CSS
     document.querySelector(`.${CSSIdentifier}`)?.remove()
     addCSS(cssRules)
+    addCSS(css_XPTables)
+    addCSS(css_Icons)
+    addCSS(css_Mobile)
   }
 
   // helper functions
@@ -97,17 +117,6 @@ hg.css = (function() {
   @import url('https://fonts.googleapis.com/css2?family=IM+Fell+Great+Primer+SC&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Macondo&display=swap');
 
-  .arrow-up {
-    width: 0; 
-    height: 0; 
-    border-left  : 6px solid transparent;
-    border-right : 6px solid transparent;
-    border-bottom: 9px solid black;
-  }
-
-  #create_xp_pointer {
-    position     : absolute;
-  }
 
   #create_name {
     padding-top   : 3ch;
@@ -141,55 +150,6 @@ hg.css = (function() {
   }
   #create_xp input {
     width         : ${settings.create_value_input_s};
-  }
- 
-  #create_xp_table {
-    padding-top   : 4ch;
-    width         : 100%;
-    position: relative;
-  }
-  #create_xp_tableHeader,
-  #create_xp_tableFooter {
-    position   : absolute;
-    left       : 50%;
-    width      : calc(9 * (3.6ch + 0.5ch + 0.8ch + 1px));
-    font-family: ${settings.create_xp_tableContent_font};
-    font-size: ${settings.create_xp_tableContent_fsize};
-  }
-  #create_xp_tableHeader {
-    transform  : translate( -50%, -50% );
-  }
-  #create_xp_tableFooter {
-    transform  : translate( -50%, +50% );
-  }
-  .create_xp_tableHeaderContent,
-  .create_xp_tableFooterContent {
-    display: inline-block;
-    width  : 3.6ch;
-    height : 3.2ch;
-    line-height: 3.8ch;
-    padding-left : 0.5ch;
-    padding-right: 0.8ch;
-  }
-  .create_xp_tableHeaderContent {
-    text-align: right;
-    border-bottom: 1px solid rgba( 1, 1, 1, 1 );
-  }
-  .create_xp_tableFooterContent {
-    text-align: right;
-    border-left  : 1px solid rgba( 23, 23, 23, 0.87 );
-  }
-  #create_xp_tableHeader > .create_xp_tableHeaderContent {
-    border-left  : 1px solid rgba( 23, 23, 23, 0 );
-  }
-  #create_xp_tableHeader > .create_xp_tableHeaderContent ~ .create_xp_tableHeaderContent {
-    border-left  : 1px solid rgba( 23, 23, 23, 0.67 );
-  }
-  #create_xp_tableFooter > .create_xp_tableFooterContent {
-    border-left  : 1px solid rgba( 23, 23, 23, 0 );
-  }
-  #create_xp_tableFooter > .create_xp_tableFooterContent ~ .create_xp_tableFooterContent {
-    border-left  : 1px solid rgba( 23, 23, 23, 0.67 );
   }
   
   #modal {
@@ -501,6 +461,7 @@ hg.css = (function() {
    }
    #character_subtray {
      flex-grow: 3;
+     overflow-y: scroll;
    }
    .character_selector {
      flex: 1;
@@ -638,8 +599,158 @@ hg.css = (function() {
      filter             : saturate(0%) brightness(30%) contrast(140%) opacity(50%);
    }
    
+   #character_reference {
+     max-height: 23ch;
+     white-space: pre-wrap;
+   }
+   #character_reference .flavour {
+     padding   : 1.3ch;
+     font-style : italic;
+     font-family: "Macondo";
+     color      : rgba( 13, 13, 13, 0.67 );
+   }
+   #character_reference .information {
+     padding   : 1.3ch;
+     padding-top: 0.6ch;
+     
+   }
+   .character_notes {
+     padding-left : 6%;
+     padding-right: 4%;
+   }
+   .character_notes_label {
+     font-size  : ${settings.character_notes_label_fsize};
+     font-family: ${settings.character_notes_label_font};
+   }
+   .character_notes textarea {
+     width      : ${settings.character_notes_value_width};
+     height     : ${settings.character_notes_value_height};
+     font-family: ${settings.character_notes_value_font};
+     font-size  : ${settings.character_notes_value_fsize};
+     border     : none;
+     outline    : 1px solid rgba( 1, 1, 1, 0 );
+     background : rgba( 79, 123, 219, 0.11 );
+   }
+   
+   #character_perks {
+     max-height   : 23ch;
+     padding-top  : 1.3ch;
+     padding-left : 6%;
+     padding-right: 4%;
+   }
+   #character_perks div {
+     display      : inline-block;
+   }
+  `
+  
+  let css_XPTables = `
+  /* 
+   *
+   *  XP Tables 
+   *
+   */
+  #create_XPTable, #character_XPTable {
+    position     : relative;
+    padding-top  : 4ch;
+    width        : 100%;
+    height       : calc(${settings.XPTable_Cell_height} * 2 + 1px + ${settings.XPTable_Arrow_height});
+  }
+  #character_XPTable {
+    padding-top  : 2.2ch;
+  }
+  /* Level // Experience */
+  #create_XPTable_Level, #create_XPTable_Experience,
+  #character_XPTable_Level, #character_XPTable_Experience {
+    position     : absolute;
+    left         : 50%;
+    width        : calc(9 * (${settings.XPTable_Cell_width} + ${settings.XPTable_Cell_paddingLeft} + ${settings.XPTable_Cell_paddingRight} + 1px));
+    font-family  : ${settings.create_xp_tableContent_font};
+    font-size    : ${settings.create_xp_tableContent_fsize};
+  }
+  #create_XPTable_Level, #character_XPTable_Level {
+    transform    : translate( -50%, -50% );
+  }
+  #create_XPTable_Experience, #character_XPTable_Experience {
+    transform    : translate( -50%, +50% );
+  }
+  /* Cells */
+  .XPTable_Level_Cell, .XPTable_Experience_Cell {
+    display      : inline-block;
+    width        : ${settings.XPTable_Cell_width};
+    height       : ${settings.XPTable_Cell_height};
+    line-height  : ${settings.XPTable_Cell_lineHeight};
+    padding-left : ${settings.XPTable_Cell_paddingLeft};
+    padding-right: ${settings.XPTable_Cell_paddingRight};
+    text-align   : right;
+  }
+  .XPTable_Level_Cell {
+    border-bottom: 1px solid rgba( 1, 1, 1, 1 );
+  }
+  #create_XPTable_Level > .XPTable_Level_Cell,
+  #character_XPTable_Level > .XPTable_Level_Cell {
+    border-left  : 1px solid rgba( 23, 23, 23, 0.00 );
+  }
+  #create_XPTable_Level > .XPTable_Level_Cell ~ .XPTable_Level_Cell,
+  #character_XPTable_Level > .XPTable_Level_Cell ~ .XPTable_Level_Cell {
+    border-left  : 1px solid rgba( 23, 23, 23, 0.67 );
+  }
+  #create_XPTable_Experience > .XPTable_Experience_Cell,
+  #character_XPTable_Experience > .XPTable_Experience_Cell {
+    border-left  : 1px solid rgba( 23, 23, 23, 0.00 );
+  }
+  #create_XPTable_Experience > .XPTable_Experience_Cell ~ .XPTable_Experience_Cell,
+  #character_XPTable_Experience > .XPTable_Experience_Cell ~ .XPTable_Experience_Cell {
+    border-left  : 1px solid rgba( 23, 23, 23, 0.67 );
+  }
+  /* Pointer */
+  #create_XPTable_Pointer,
+  #character_XPTable_Pointer {
+    position     : absolute;
+    transition   : all 230ms;
+  }
+  .XPTable_ArrowUp {
+    width        : 0; 
+    height       : 0; 
+    border-left  : ${settings.XPTable_Arrow_height} solid transparent;
+    border-right : ${settings.XPTable_Arrow_height} solid transparent;
+    border-bottom: 9px solid black;
+  }
+  `
+  
+  let css_Icons = `
 
+.class-icon {
+   background-size: cover;
+ }
+ #bannerspear.class-icon   {
+   background-image: url('assets/class_bannerspear.png');
+ }
+ #drifter.class-icon   {
+   background-image: url('assets/class_drifter.png');
+ }
+ #boneshaper.class-icon   {
+   background-image: url('assets/class_boneshaper.png');
+ }
+ #deathwalker.class-icon   {
+   background-image: url('assets/class_deathwalker.png');
+ }
+ #blinkblade.class-icon   {
+   background-image: url('assets/class_blinkblade.png');
+ }
+ #germinate.class-icon   {
+   background-image: url('assets/class_germinate.png');
+ }
+ `
+  let css_Mobile = `
+  /* 
+   *
+   *  Mobile Settings 
+   *
+   */
    @media screen and (max-width: 600px) {
+    .class-icon {
+      
+    }
     .app_header,
     .list_header,
     .character_back,
@@ -693,8 +804,11 @@ hg.css = (function() {
     .create_classPicker_element {
       font-size  : ${settings.create_classPicker_element_fsize_m};
     }
+    .character_notes_label {
+      font-size  : ${settings.character_notes_label_fsize_m};
+    }
    }
-  `
+   `
   
   return {
     init : initialise,
