@@ -2,6 +2,7 @@ hg = typeof hg != 'undefined' ? hg : {}
 
 hg.nexus = (function() {
   // globals
+  let _cs = hg.css
   let _db = hg.db
   let _ux = hg.ux
   let _co = hg.constructs
@@ -32,6 +33,8 @@ hg.nexus = (function() {
     
     db = await _db.init('uuid', m)
     
+    // Initialise CSS
+    _cs.init()
     // Initialise the UX
     _ux.init()
     
