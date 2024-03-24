@@ -60,7 +60,10 @@
    background-image: url('assets/class_geminate.png');
  }
 </style>
+<script src='hg.base64.js'></script>
 <script src='hg.data.js'></script>
+<script src='hg.css.js'></script>
+
 <script src='hg.constructs.js'></script>
 <script src='hg.db.js'></script>
 <script src='hg.ux.js'></script>
@@ -70,51 +73,14 @@
 <script>
 
 document.addEventListener('DOMContentLoaded', async (e) => {
-  
+  // Initialise the Coordinator
   await hg.nexus.init()
+  // Print a List of Characters
   await hg.nexus.list()
   
-  /* Load the database 
-  db = await hg.db.init('uuid',
-  [
-    {key: 'uuid',    unique: true },
-    {key: 'class',   unique: false},
-    {key: 'name',    unique: false},
-    {key: 'level',   unique: false},
-    {key: 'xp',      unique: false},
-    {key: 'gold',    unique: false},
-    {key: 'lumber',  unique: false},
-    {key: 'metal',   unique: false},
-    {key: 'hide',    unique: false},
-    {key: 'arrowvine',   unique: false},
-    {key: 'flamefruit',  unique: false},
-    {key: 'axenut',      unique: false},
-    {key: 'rockroot',    unique: false},
-    {key: 'corpsecap',   unique: false},
-    {key: 'snowthistle', unique: false},
-  ])
-  
-  let c = await hg.db.getCharacter('HX10L')
-  console.log(c)
-  hg.ux.list([
-    {uuid: 'A', name: 'Ingolf Ehrenfest', class: 'Drifter', level: 7},
-    {uuid: 'B', name: 'Lamberto Fiamolin', class: 'Blinkblade', level: 9},
-    {uuid: 'C', name: 'Havisa Laurens', class: 'bannerspear', level: 7},
-  ])
-  let alex = new hg.constructs.character({
-    class: 'Drifter',
-    name : 'Alex',
-    level: 7,
-    xp   : 387,
-    gold : 31,
-  })
-  await hg.db.writeCharacter(alex)
-  */
-  
-  
-
-  
   /*
+  SETTINGS - localStorage unlock classes
+  
   Level
   Experience
   Gold
@@ -124,24 +90,6 @@ document.addEventListener('DOMContentLoaded', async (e) => {
   Mastery 2
   Perks track, checkmarks x 18
   Perks tree
-
- <div id='lumber' class='resource-icon'></div>
- <div id='metal'  class='resource-icon'></div>
- <div id='hide'   class='resource-icon'></div>
- 
- <div id='arrowvine'   class='resource-icon'></div>
- <div id='flamefruit'  class='resource-icon'></div>
- <div id='axenut'      class='resource-icon'></div>
- <div id='rockroot'    class='resource-icon'></div>
- <div id='corpsecap'   class='resource-icon'></div>
- <div id='snowthistle' class='resource-icon'></div>
-
- <div id='bannerspear' class='class-icon'></div>
- <div id='drifter'     class='class-icon'></div>
- <div id='boneshaper'  class='class-icon'></div>
- <div id='deathwalker' class='class-icon'></div>
- <div id='blinkblade'  class='class-icon'></div>
- <div id='geminate'    class='class-icon'></div>
  
   character selector
   - class picker
