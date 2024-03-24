@@ -44,13 +44,12 @@ hg.constructs = (function() {
     
     setExperience(x) {
       let t = Object.entries(hg.data.levels)
-      for (var i = 0; i < t.length; i++) {
-        let c = t[i][0]
-        let v = t[i][1]
-        console.log(c,v,x)
-        if (x > v) {
-          console.log(c)
-          break
+      for (var i = t.length - 1; i > -1; i--) {
+        let lvl = t[i][0]
+        let cut = t[i][1]
+        if (x >= cut) {
+          this.level = lvl
+          break;
         }
       }
     }
