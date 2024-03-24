@@ -32,6 +32,9 @@ hg.ux = (function() {
     create_value_fsize_m: `6vmin`,
     create_value_input  : `13ch`,
     create_value_input_s: `6ch`,
+    create_xp_tableContent_font: `"Stick No Bills"`,
+    create_xp_tableContent_fsize: `4vmin`,
+    create_xp_tableContent_fsize_m: `4vmin`,
     // UX Settings for Create Modal
     create_classPicker_element_font   : `"Stick No Bills"`,
     create_classPicker_element_fsize  : `6vmin`,
@@ -90,6 +93,7 @@ hg.ux = (function() {
     resources: ['lumber','metal','hide','arrowvine','flamefruit','axenut','rockroot','corpsecap','snowthistle'],
     herbs    : ['arrowvine','flamefruit','axenut','rockroot','corpsecap','snowthistle'],
   }
+  let maximumXP = 500
   let CSSIdentifier = `hg.ux.rules`
   let body, surface, area, character;
   let noise_base64 = /* https://codepen.io/stephen1on1/pen/VeyNZo */ `data:image/png;base64,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`
@@ -138,7 +142,8 @@ hg.ux = (function() {
     })
     area.addEventListener( events.create_classPicker_choose, (e) => {
       console.log(e.detail)
-      document.querySelector('#create_class .create_value').innerText = e.detail
+      document.querySelector('#create_class .create_value').innerText = classMap[e.detail] ? classMap[e.detail] : properCase(e.detail)
+      document.querySelector('#create_class .create_value').setAttribute('value', e.detail)
       document.querySelector('#modal').remove()
     })
 
@@ -168,7 +173,7 @@ hg.ux = (function() {
         .replace(/_UUID/g,  c.uuid )
         .replace('_NAME',  ' ' + c.name + '  ' )
         .replace('_LEVEL', 'Level ' + c.level + ' ')
-        .replace('_CLASS', (classMap[c.class.toLowerCase()] ? classMap[c.class.toLowerCase()] : c.class) + ' ')
+        .replace('_CLASS', (classMap[c.class.toLowerCase()] ? classMap[c.class.toLowerCase()] : properCase(c.class)) + ' ')
         .replace('_ICON',  `<div id="${c.class.toLowerCase()}" class="class-icon list_icon"></div>`)
      })
     }
@@ -185,7 +190,6 @@ hg.ux = (function() {
   // create
   let create = function() {
     let t = Object.entries(hg.data.levels)
-    let c = Object.keys(hg.data.classes)
     
     let s  = ``
         s += `<div class="app_back_button" onclick="raiseEvent(\'${events.navigate_back}\',null,document.querySelector(\'#area\'))"><img src="${back_base64}"></img></div>`
@@ -193,26 +197,75 @@ hg.ux = (function() {
         s += `<div id="create_save" class="app_save_button" onclick="raiseEvent(\'${events.save_create}\',null,document.querySelector(\'#area\'))"><img src="${save_base64}"></img></div>`
         s += `<div class="create_element" id="create_name"><div id="create_name_label" class="create_label">Name: </div><input class="create_value"></input></div>`
         s += `<div class="create_element" id="create_class"><div id="create_class_label" class="create_label">Class: </div>`
-        s += `<div class="create_value" onclick="raiseEvent(\'${events.create_classPicker_open}\',null,document.querySelector('#area'))">`
-        c.forEach(_c => {
-          // s += _c
-          s += `class`
-        })
+        s += `<div class="create_value" onclick="raiseEvent(\'${events.create_classPicker_open}\',null,document.querySelector('#area'))">pick a class`
         s += `</div>`
         s += `</div>`
-        s += `<div class="create_element" id="create_xp"><div id="create_xp_label" class="create_label">XP: </div><input type="number" max="100" min="0" class="create_value"></input></div>`
+        s += `<div class="create_element" id="create_xp"><div id="create_xp_label" class="create_label">XP: </div><input type="number" max="500" min="0" value="0" class="create_value"></input></div>`
+        s += `<div class="create_element" id="create_level"><div id="create_level_label" class="create_label">Level: </div><div class="create_value"></div></div>`
         
     let a = '', b = '';
     t.forEach(([k,v],i) => {
-      a += `${k}`
-      b += `${v}`
+      a += `<div class="create_xp_tableHeaderContent">${k}</div>`
+      b += `<div class="create_xp_tableFooterContent">${v}</div>`
     })
-    s += a + '<br>'
-    s += b
+    let x = ``
+    x += `<div id="create_xp_table">`
+    x +=   `<div id="create_xp_tableHeader">`
+    x +=     a
+    x +=   `</div>`
+    x +=   `<div id="create_xp_tableFooter">`
+    x +=     b
+    x +=   `</div>`
+    x += `<div id="create_xp_pointer" class="arrow-up"></div>`
+    x += `</div>`
     
-    s += ``
+    s += x
     
     render(s)
+
+    // Measure heights and widths
+    let y = document.querySelector('#create_xp_table')
+    let u = document.querySelector('#create_xp_tableHeader')
+    let z = document.querySelector('#create_xp_tableFooter')
+    let c = document.querySelector('.create_xp_tableHeaderContent')
+    let p = document.querySelector('#create_xp_pointer')
+
+    let leftEdge      = u.getBoundingClientRect().x
+    let bottomEdge    = y.getBoundingClientRect().height + u.getBoundingClientRect().height + z.getBoundingClientRect().height
+    let pointerWidth  = p.getBoundingClientRect().width
+    let pointerHeight = p.getBoundingClientRect().height
+    let cellWidth     = c.getBoundingClientRect().width
+
+    let leftOrigin    = leftEdge - pointerWidth/2
+    let topOrigin     = bottomEdge - pointerHeight 
+    
+    p.style.left = leftOrigin
+    p.style.top  = topOrigin
+
+    // Listen to XP change
+    document.querySelector('#create_xp input').addEventListener('keyup', (e) => {
+      let v = e.target.value
+      // Cap the value
+      v = Math.min( maximumXP, v )
+      // Update the expected Level
+      let level = 0
+      let res   = 0
+      let prior = 0
+      for (var i = t.length - 1; i > -1; i--) {
+        let m = t[i]
+        let lvl = m[0]
+        let cut = m[1]
+        if (v >= cut) {
+          level = lvl
+          res = cut
+          break;
+        }
+        prior = cut
+      }
+      document.querySelector('#create_level .create_value').innerText = level
+      // Update the pointer
+      p.style.left = leftOrigin + ((level - 1) * (cellWidth)) + (((v - res))/(prior - res) * cellWidth)
+    })
   }
   
   let createClassPickerOpen = function() {
@@ -240,7 +293,7 @@ hg.ux = (function() {
     // Save data
     character = data
   
-    let c  = classMap[data.class.toLowerCase()] ? classMap[data.class.toLowerCase()] : data.class
+    let c  = classMap[data.class.toLowerCase()] ? classMap[data.class.toLowerCase()] : properCase(data.class)
 
     let s  = ``
         s += `<div class="character_back" onclick="raiseEvent(\'${events.character_back}\',null,document.querySelector(\'#area\'))"><img src="${back_base64}"></img></div>`
@@ -299,9 +352,9 @@ hg.ux = (function() {
   let harvestCreate = function() {
     let output = {}
     output.name = document.querySelector('#create_name input').value
-    output.class = document.querySelector('#create_class .create_value').innerText
+    output.class = document.querySelector('#create_class .create_value').getAttribute('value')
     output.xp    = document.querySelector('#create_xp input').value
-  
+  console.log(output)
     return output
   }
   
@@ -324,10 +377,26 @@ hg.ux = (function() {
 
   let raiseEvent = function(event, datum, target) { let t = target ? target : document.querySelector('body'); return t.dispatchEvent(new CustomEvent(event, {detail: datum})) }
 
+  let properCase = function(str) {
+    return str.replace( /\w\S*/g, (t) => { return t.charAt(0).toUpperCase() + t.substr(1).toLowerCase() } )
+  }
+
   let cssRules = `
   @import url('https://fonts.googleapis.com/css2?family=Hina+Mincho&family=Julee&family=Stick+No+Bills:wght@200..800&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=IM+Fell+Great+Primer+SC&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Macondo&display=swap');
+
+  .arrow-up {
+    width: 0; 
+    height: 0; 
+    border-left  : 6px solid transparent;
+    border-right : 6px solid transparent;
+    border-bottom: 9px solid black;
+  }
+
+  #create_xp_pointer {
+    position     : absolute;
+  }
 
   #create_name {
     padding-top   : 3ch;
@@ -361,6 +430,55 @@ hg.ux = (function() {
   }
   #create_xp input {
     width         : ${settings.create_value_input_s};
+  }
+ 
+  #create_xp_table {
+    padding-top   : 4ch;
+    width         : 100%;
+    position: relative;
+  }
+  #create_xp_tableHeader,
+  #create_xp_tableFooter {
+    position   : absolute;
+    left       : 50%;
+    width      : calc(9 * (3.6ch + 0.5ch + 0.8ch + 1px));
+    font-family: ${settings.create_xp_tableContent_font};
+    font-size: ${settings.create_xp_tableContent_fsize};
+  }
+  #create_xp_tableHeader {
+    transform  : translate( -50%, -50% );
+  }
+  #create_xp_tableFooter {
+    transform  : translate( -50%, +50% );
+  }
+  .create_xp_tableHeaderContent,
+  .create_xp_tableFooterContent {
+    display: inline-block;
+    width  : 3.6ch;
+    height : 3.2ch;
+    line-height: 3.8ch;
+    padding-left : 0.5ch;
+    padding-right: 0.8ch;
+  }
+  .create_xp_tableHeaderContent {
+    text-align: right;
+    border-bottom: 1px solid rgba( 1, 1, 1, 1 );
+  }
+  .create_xp_tableFooterContent {
+    text-align: right;
+    border-left  : 1px solid rgba( 23, 23, 23, 0.87 );
+  }
+  #create_xp_tableHeader > .create_xp_tableHeaderContent {
+    border-left  : 1px solid rgba( 23, 23, 23, 0 );
+  }
+  #create_xp_tableHeader > .create_xp_tableHeaderContent ~ .create_xp_tableHeaderContent {
+    border-left  : 1px solid rgba( 23, 23, 23, 0.67 );
+  }
+  #create_xp_tableFooter > .create_xp_tableFooterContent {
+    border-left  : 1px solid rgba( 23, 23, 23, 0 );
+  }
+  #create_xp_tableFooter > .create_xp_tableFooterContent ~ .create_xp_tableFooterContent {
+    border-left  : 1px solid rgba( 23, 23, 23, 0.67 );
   }
   
   #modal {
