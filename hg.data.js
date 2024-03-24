@@ -2,21 +2,35 @@ hg = typeof hg != 'undefined' ? hg : {}
 
 hg.data = {}
 
+hg.data.levels = {
+  1:   0,
+  2:  45,
+  3:  95,
+  4: 150,
+  5: 210,
+  6: 275,
+  7: 345,
+  8: 420,
+  9: 500,
+}
+
 hg.data.classes = {}
 
 hg.data.classes.drifter = {
-  hand_size: 12,
+  key       : 'drifter',
+  print     : 'Inox Drifter',
+  hand_size : 12,
   complexity: 1,
   elemental_affinities: [],
-  traits: ['outcast', 'resourceful', 'strong'],
-  ancestry: 'inox',
-  melee   : 4,
-  ranged  : 4,
-  mobility: 3,
-  support : 4,
-  defense : 4,
-  control : 1,
-  health  : [
+  traits    : ['outcast', 'resourceful', 'strong'],
+  ancestry  : 'inox',
+  melee     : 4,
+  ranged    : 4,
+  mobility  : 3,
+  support   : 4,
+  defense   : 4,
+  control   : 1,
+  health    : [
     10, 12, 14, 16, 18, 20, 22, 24, 26
   ],
   perks: [
@@ -49,4 +63,46 @@ hg.data.classes.drifter = {
     active_bonuses: '30',
     retirement    : '48.3',
   },
+}
+
+hg.data.classes.bannerspear = {
+  key       : 'bannerspear',
+  print     : 'Banner Spear',
+  hand_size : 12,
+  
+}
+
+hg.data.classes.blinkblade = {
+  key       : 'blinkblade',
+  print     : 'Blinkblade',
+  hand_size : 12,
+
+}
+
+hg.data.classes.deathwalker = {
+  key       : 'deathwalker',
+  print     : 'Deathwalker',
+  hand_size : 12,
+
+}
+
+hg.data.classes.boneshaper = {
+  key       : 'boneshaper',
+  print     : 'Boneshaper',
+  hand_size : 12,
+
+}
+
+hg.data.classes.germinate = {
+  key       : 'germinate',
+  print     : 'Germinate',
+  hand_size : 12,
+
+}
+
+hg.data.classes.pyroclast = {
+  key       : 'pyroclast',
+  print     : 'Pyroclast',
+  stealth   : 'meteor',
+  
 }
