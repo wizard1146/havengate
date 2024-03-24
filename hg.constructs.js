@@ -32,10 +32,27 @@ hg.constructs = (function() {
       if (args) Object.entries(args).forEach(([k,v],i) => {
         this[k]  = v
       })
+      
+      // Set Experience
+      console.log(this.xp)
+      this.setExperience( this.xp )
     }
     
     static async create() {
       return new Character()
+    }
+    
+    setExperience(x) {
+      let t = Object.entries(hg.data.levels)
+      for (var i = 0; i < t.length; i++) {
+        let c = t[i][0]
+        let v = t[i][1]
+        console.log(c,v,x)
+        if (x > v) {
+          console.log(c)
+          break
+        }
+      }
     }
   }
 
