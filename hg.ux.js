@@ -270,6 +270,7 @@ hg.ux = (function() {
   
   // character
   let renderCharacter = function( data ) {
+    console.log(data)
     // Save data
     character = data
   
@@ -318,6 +319,18 @@ hg.ux = (function() {
     document.querySelector('.character_selector.active')?.classList.remove('active')
     document.querySelector('#character_selector_' + which).classList.add('active')
     // Save any changed data & 
+    // Perks
+    let m = document.querySelectorAll('#character_perks label');
+    let g = []
+    if (m) {
+      m.forEach(item => {
+        if (item.children[0].checked) {
+          g.push(item.id)
+        }
+      })
+    }
+    if (g.length) { character.perks = g }
+    // Notes
     if (n) { character.notes = n.value }
     // Wipe subtray
     document.querySelector('#character_subtray').innerHTML = ''
@@ -340,6 +353,7 @@ hg.ux = (function() {
         break;
       case 'perks':
         if (c) {
+          let g = character?.perks ? clone(character?.perks) : []
           let r = {}
           s += `<div id="character_perks">`
           c.perks.forEach(e => {
@@ -348,12 +362,16 @@ hg.ux = (function() {
           })
           Object.entries(r).forEach(([k,v],i) => {
             for (var j = 0; j < v.count; j++) {
-              s += `<label><input type="checkbox"><span class="checkmark"></span></label>`
+              // remove if in character
+              let a = g.indexOf(k), b = '';
+              if (a != -1) {
+                g.splice(a, 1)
+                b = 'checked'
+              }
+              s += `<label id="${k}"><input type="checkbox" ${b}><span class="checkmark"></span></label>`
             }
             s += `<div class="">${v.text}</div><br/>`
           })
-          console.log(c.perks)
-          console.log(r)
           s += `</div>`
         }
         break;
@@ -363,6 +381,26 @@ hg.ux = (function() {
         s += `<div class="flavour">${m.flavour}</div>`
         s += `<div class="information">${m.class_notes}</div>`
         s += `</div>`
+        break;
+      case 'modDeck':
+      let h = ''
+      h += '<div id="modDeck">'
+      let g = [
+ 'card_add_0',
+ 'card_add_1',
+ 'card_add_2',
+ 'card_crit',
+ 'card_null',
+ 'card_sub_1',
+ 'card_sub_2',]
+ g.forEach( f => {
+   console.log(f)
+   h += `<div id="modDeck_${f}" class="modDeck_card"></div>`
+ })
+ h += '</div>'
+ s += h
+
+        
         break;
     }
     document.querySelector('#character_subtray').insertAdjacentHTML('beforeend', s)
@@ -387,6 +425,17 @@ hg.ux = (function() {
     if (notes) {
       character.notes = notes.value
     }
+    // If Perks
+    let perks = document.querySelectorAll('#character_perks label');
+    let g = []
+    if (perks) {
+      perks.forEach(item => {
+        if (item.children[0].checked) {
+          g.push(item.id)
+        }
+      })
+    }
+    if (g.length) { character.perks = g }
     
     return character
   }
@@ -397,6 +446,25 @@ hg.ux = (function() {
   // helper functions
   let raiseEvent = function(event, datum, target) { let t = target ? target : area; return t.dispatchEvent(new CustomEvent(event, {detail: datum})) }
   let properCase = function(str) { return str.replace( /\w\S*/g, (t) => { return t.charAt(0).toUpperCase() + t.substr(1).toLowerCase() } ) }
+
+  /* Copies any object deeply */
+  let clone = function(obj) {
+      let copy
+      if (null == obj || 'object' != typeof obj) { return obj }
+      if (obj instanceof String) { return (' ' + obj).slice(1) }  /* https://stackoverflow.com/a/31733628 */
+      if (obj instanceof Date) { return new Date().setTime(obj.getTime()) }
+      if (obj instanceof Array) {
+         copy = []
+         for (let i = 0; i < obj.length; i++) { copy[i] = clone(obj[i]) }
+         return copy
+      }
+      if (obj instanceof Object) {
+         copy = {}
+         for (let attr in obj) { if (obj.hasOwnProperty(attr)) { copy[attr] = clone(obj[attr]) } }
+         return copy
+      }
+      throw new Error('Unable to copy obj! Type not supported.')
+  }
 
   return {
     init: initialise,
