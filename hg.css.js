@@ -97,6 +97,7 @@ hg.css = (function() {
     addCSS(cssRules)
     addCSS(css_XPTables)
     addCSS(css_Icons)
+    addCSS(css_modDeck)
     addCSS(css_Mobile)
   }
 
@@ -741,6 +742,40 @@ hg.css = (function() {
    background-image: url('assets/class_germinate.png');
  }
  `
+ 
+ let css_modDeck = `
+   #modDeck {
+   
+   }
+   .modDeck_card {
+     width    : 51vmin;
+     height   : 33vmin;
+     background-size: contain;
+     background-repeat: no-repeat;
+   }
+   #modDeck_card_add_0 {
+     background-image: url('assets/card_add_0.png');
+   }
+   #modDeck_card_add_1 {
+     background-image: url('assets/card_add_1.png');
+   }
+   #modDeck_card_add_2 {
+     background-image: url('assets/card_add_2.png');
+   }
+   #modDeck_card_crit {
+     background-image: url('assets/card_crit.png');
+   }
+   #modDeck_card_null {
+     background-image: url('assets/card_null.png');
+   }
+   #modDeck_card_sub_1 {
+     background-image: url('assets/card_sub_1.png');
+   }
+   #modDeck_card_sub_2 {
+     background-image: url('assets/card_sub_2.png');
+   }
+ `
+ 
   let css_Mobile = `
   /* 
    *
