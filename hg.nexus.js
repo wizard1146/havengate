@@ -19,6 +19,8 @@ hg.nexus = (function() {
     navigate_back      : `navigate-back`,
     pass_save_create   : `pass-save-create`,
     pass_save_character: `pass-save-character`,
+    deck_shuffled      : `deck-shuffled`,
+    ux_shuffle_deck    : `shuffle-deck`,
   }
   
   let initialise = async function() {
@@ -53,10 +55,17 @@ hg.nexus = (function() {
     area.addEventListener( events.navigate_back, getList )
     area.addEventListener( events.pass_save_create, createCharacter )
     area.addEventListener( events.pass_save_character, saveCharacter )
+
+    area.addEventListener( events.ux_shuffle_deck, shuffleDeck )
+    area.addEventListener( events.deck_shuffled, deckShuffled )
+    
   }
   
   let getCharacter = async function(e) {
     let c = await _db.getCharacter(e.detail)
+
+    c = new _co.character(c)
+    c.deck = await _co.modifierDeck.new( c )
 
     _ux.char(c)
   }
@@ -81,6 +90,17 @@ hg.nexus = (function() {
     let nc = new _co.character(e.detail)
     // Write new character to DB
     await _db.writeCharacter( nc )
+  }
+
+  let shuffleDeck = function(e) {
+    let c = e.detail
+    if (c.deck) {
+      c.deck.shuffle()
+    }
+  }
+
+  let deckShuffled = async function(e) {
+    console.log(e.detail)
   }
 
   return {
