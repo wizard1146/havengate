@@ -746,6 +746,15 @@ hg.css = (function() {
  let css_modDeck = `
    #modDeck {
      max-height: 23ch;
+     padding-left: 3.4vmin;
+   }
+   #modDeck_cards {
+     position        : relative;
+   }
+   #modDeck_cards_cover {
+     width           : calc(23ch + 3ch);
+     height          : calc(400/600 * 23ch + 3ch);
+     padding         : 0ch;
    }
    .modDeck_card {
      width              : 23ch;
@@ -754,31 +763,38 @@ hg.css = (function() {
      background-position: center;
      background-repeat  : no-repeat;
      border-radius      : 11px;
+     border-bottom      : 1px solid rgba(82, 80, 72, 1);
+     border-right       : 1px solid rgba(82, 80, 72, 1);
    }
-   #modDeck_card_back {
-     background-image: url('assets/card_back.png');
+   .modDeck_card_back {
+     background-image   : url('assets/card_back.png');
+     position           : absolute;
    }
-   #modDeck_card_add_0 {
+   .modDeck_card_add_0 {
      background-image: url('assets/card_add_0.png');
    }
-   #modDeck_card_add_1 {
+   .modDeck_card_add_1 {
      background-image: url('assets/card_add_1.png');
    }
-   #modDeck_card_add_2 {
+   .modDeck_card_add_2 {
      background-image: url('assets/card_add_2.png');
    }
-   #modDeck_card_crit {
+   .modDeck_card_crit {
      background-image: url('assets/card_crit.png');
    }
-   #modDeck_card_null {
+   .modDeck_card_null {
      background-image: url('assets/card_null.png');
    }
-   #modDeck_card_sub_1 {
+   .modDeck_card_sub_1 {
      background-image: url('assets/card_sub_1.png');
    }
-   #modDeck_card_sub_2 {
+   .modDeck_card_sub_2 {
      background-image: url('assets/card_sub_2.png');
    }
+
+   #modDeck_count div   { display: inline-block; }
+   #modDeck_blesses div { display: inline-block; }
+   #modDeck_curses div  { display: inline-block; }
  `
  
   let css_Mobile = `
