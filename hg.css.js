@@ -745,13 +745,18 @@ hg.css = (function() {
  
  let css_modDeck = `
    #modDeck {
-   
+     max-height: 23ch;
    }
    .modDeck_card {
-     width    : 51vmin;
-     height   : 33vmin;
-     background-size: contain;
-     background-repeat: no-repeat;
+     width              : 23ch;
+     height             : calc(400/600 * 23ch);
+     background-size    : contain;
+     background-position: center;
+     background-repeat  : no-repeat;
+     border-radius      : 11px;
+   }
+   #modDeck_card_back {
+     background-image: url('assets/card_back.png');
    }
    #modDeck_card_add_0 {
      background-image: url('assets/card_add_0.png');
