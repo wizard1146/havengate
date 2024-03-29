@@ -4,6 +4,7 @@ hg.ux = (function() {
   /* External data */
   let _levels  = hg.data.levels
   let _classes = hg.data.classes
+  let _modDeck = hg.constructs.modifierDeck
 
   let settings = {
   
@@ -23,6 +24,10 @@ hg.ux = (function() {
     create_classPicker_choose: `create-classPicker-choose`,
     
     modal_close      : `modal-close`,
+
+    internal_deck_shuffle: `internal-deck-shuffle`,
+    internal_deck_draw   : `internal-deck-draw`,
+
     /* <= */
     list_UUIDselected: `list-uuid-selected`,
     character_back   : `character-back`,
@@ -30,6 +35,10 @@ hg.ux = (function() {
     pass_save_character: `pass-save-character`,
     
     character_save   : `character-save`,
+
+    shuffle_deck     : `shuffle-deck`,
+    /* => */
+    deck_shuffled    : `deck-shuffled`,
   }
   let classMap = {
     bannerspear: 'Banner Spear',
@@ -92,6 +101,36 @@ hg.ux = (function() {
       let data = harvestCharacter(character)
       raiseEvent( events.pass_save_character, data )
     })
+
+    // Modifier Deck events
+    area.addEventListener( events.internal_deck_shuffle, (e) => {
+      raiseEvent( events.shuffle_deck, character )
+    })
+    area.addEventListener( events.deck_shuffled, (e) => {
+      console.log(e.detail)
+      refreshDeck()
+    })
+    area.addEventListener( events.internal_deck_draw, (e) => {
+      if (!e.detail) { return }
+      let d = character.deck
+      let n = parseInt(e.detail.id.replace('modDeck_card_','')) - 1
+      let c = d.list[n]
+      let m = 'modDeck_' + c.uri
+
+      let f = document.querySelector('#' + e.detail.id)
+      
+      f.classList.remove('modDeck_card_back')
+      f.classList.add(m)
+      f.classList.add('revealed')
+      f.style.left = '0px'
+      f.style.top  = '0px'      
+
+      // Move it into different DIV
+      let parent = f.parentElement
+      
+      parent.after( f );
+    })
+    
 
     return surface
   }
@@ -383,37 +422,52 @@ hg.ux = (function() {
         s += `</div>`
         break;
       case 'modDeck':
-      let h = ''
-      h += '<div id="modDeck">'
-      let g = [
- 'card_back',
- 'card_add_0',
- 'card_add_1',
- 'card_add_2',
- 'card_crit',
- 'card_null',
- 'card_sub_1',
- 'card_sub_2',]
- g.forEach( f => {
-   console.log(f)
-   h += `<div id="modDeck_${f}" class="modDeck_card"></div>`
- })
- 
-let c = new hg.constructs.modifierDeck()
-console.log(c)
-c.shuffle()
-c.deck.forEach(card => {
-  h += `<div id="modDeck_${card.uri}" class="modDeck_card"></div>`
-})
-
- h += '</div>'
-s += h
-console.log(c)
+        let h = ''
+        h += '<div id="modDeck">'
+        h += '<div id="modDeck_count"><div id="modDeck_count_label">Cards:</div><div id="modDeck_count_value">0</div></div>'
+        h += '<div id="modDeck_refresh">Update Deck & Shuffle</div>'
+        h += `<div id="modDeck_shuffle" onclick="raiseEvent(\'${events.internal_deck_shuffle}\')">Shuffle</div>`
+        h += '<div id="modDeck_blesses"><div id="modDeck_blesses_sub">-</div><div id="modDeck_blesses_label">Bless</div><div id="modDeck_blesses_count">0</div><div id="modDeck_blesses_plus">+</div></div>'
+        h += '<div id="modDeck_curses"><div id="modDeck_curses_sub">-</div><div id="modDeck_curses_label">Curse</div><div id="modDeck_curses_count">0</div><div id="modDeck_curses_plus">+</div></div>'
+        h += '<div id="modDeck_cards">'
+        h +=  organiseModDeck()
+        h += '</div>'
+        h += `</div>`
+        s += h
         
         break;
     }
     document.querySelector('#character_subtray').insertAdjacentHTML('beforeend', s)
   } 
+
+  // access modifier deck
+  let organiseModDeck = function() {
+    let s = ``
+    let d = (character.deck !== null) ? character.deck : new _modDeck( character )
+
+    d.list.forEach((card, index) => {
+      // s += `<div id="modDeck_card_${(index+1).toString().padStart(2,'0')}" class="modDeck_card modDeck_${card.uri}"></div>`
+      // s += `<div id="modDeck_card_${(index+1).toString().padStart(2,'0')}" class="modDeck_card modDeck_card_back"></div>`
+    })
+    let leftIncrement = '0.34px'
+    let topIncrement  = '0.34px'
+    for (var i = d.list.length - 1; i > -1; i--) {
+      let adjustment = `style="left: calc(${i} * ${leftIncrement}); top: calc(${i} * ${topIncrement});"`
+      let onclick    = `onclick="raiseEvent(\'${events.internal_deck_draw}\', this.id)"`
+      s += `<div id="modDeck_card_${(i + 1).toString().padStart(2,'0')}" class="modDeck_card modDeck_card_back" ${adjustment}></div>`
+    }
+
+    let click = `onclick="raiseEvent(\'${events.internal_deck_draw}\', this.lastChild)"`
+    s = `<div id="modDeck_cards_cover" ${click}>` + s + `</div>`
+    
+    return s
+  }
+
+  let refreshDeck = function() {
+    let container = document.querySelector('#modDeck_cards')
+    document.querySelector('#modDeck_cards').innerHTML = organiseModDeck()
+    
+  }
   
   // collect Create data
   let harvestCreate = function() {
