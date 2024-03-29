@@ -386,6 +386,7 @@ hg.ux = (function() {
       let h = ''
       h += '<div id="modDeck">'
       let g = [
+ 'card_back',
  'card_add_0',
  'card_add_1',
  'card_add_2',
@@ -397,9 +398,17 @@ hg.ux = (function() {
    console.log(f)
    h += `<div id="modDeck_${f}" class="modDeck_card"></div>`
  })
- h += '</div>'
- s += h
+ 
+let c = new hg.constructs.modifierDeck()
+console.log(c)
+c.shuffle()
+c.deck.forEach(card => {
+  h += `<div id="modDeck_${card.uri}" class="modDeck_card"></div>`
+})
 
+ h += '</div>'
+s += h
+console.log(c)
         
         break;
     }
