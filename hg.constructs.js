@@ -1,6 +1,9 @@
 hg = typeof hg != 'undefined' ? hg : {}
 
 hg.constructs = (function() {
+  let events = {
+    deck_shuffled: 'deck-shuffled',
+  }
   let ModDeckDefaults = [
      -2,
      -1,-1,-1,-1,-1,
@@ -37,6 +40,7 @@ hg.constructs = (function() {
       this.notes    = ``
       this.perks    = []
       this.checks   = []
+      this.deck     = null
       
       Object.entries(characterResources).forEach(([k,v],index) => {
         this[k]  = v
@@ -65,32 +69,47 @@ hg.constructs = (function() {
         }
       }
     }
-  }
 
-  class ModDeck {
-    constructor() {
-      this.deck = []
-      ModDeckDefaults.forEach(card => {
-        this.deck.push(new ModCard(card))
-      })
-    }
-
-    static async new(arg) {
-      return new ModDeck(arg)
-    }
-    
-    shuffle() {
-      var i = this.deck.length, j, temp;
-      while (--i > 0) {
-        j = Math.floor(Math.random() * (i + 1))
-        // [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]]
-        temp = this.deck[j]
-        this.deck[j] = this.deck[i]
-        this.deck[i] = temp
-      }
+    getDeck() {
       return this.deck
     }
 
+    async refreshDeck() {
+      let deck = await ModDeck.new( this /* pass the parent */ )
+      // Modify the deck with perks
+
+      // Update the underlying
+      this.deck = deck
+
+      return this
+    }
+  }
+
+  class ModDeck {
+    constructor( parent ) {
+      this.owner = parent 
+      this.list  = []
+      ModDeckDefaults.forEach(card => {
+        this.list.push(new ModCard(card))
+      })
+    }
+
+    static async new( parent ) {
+      return new ModDeck( parent )
+    }
+    
+    shuffle() {
+      var i = this.list.length, j, temp;
+      while (--i > 0) {
+        j = Math.floor(Math.random() * (i + 1))
+        // [this.list[i], this.list[j]] = [this.list[j], this.list[i]]
+        temp = this.list[j]
+        this.list[j] = this.list[i]
+        this.list[i] = temp
+      }
+      raiseEvent( events.deck_shuffled, this )
+      return this.list
+    }
   }
 
   class ModCard {
