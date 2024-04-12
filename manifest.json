@@ -17,7 +17,7 @@
   "start_url": "/havengate?source=pwa",
   "background_color": "#7293DB",
   "display": "standalone",
-  "scope": "/",
+  "scope": "/havengate",
   "theme_color": "#7293DB",
   "shortcuts": [
   ],
